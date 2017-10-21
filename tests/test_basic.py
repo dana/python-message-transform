@@ -18,8 +18,24 @@ def test_nested_transform():
     assert message['c']['d'] == 'e'
 
 
-@pytest.mark.xfail(strict=True)
 def test_simple_substitution():
     message = {'a': 'b'}
     mtransform(message, {'x': ' specials/$message->{a}'})
     assert message['x'] == 'b'
+
+
+def test_undefined_special():
+    message = {'a': 'b'}
+    mtransform(message, {'x': ' specialundefined$message->{a}'})
+    assert message['x'] == ' specialundefined$message->{a}'
+
+
+def test_multi_level_special():
+    message = {'a': {'b': 'c'}}
+    mtransform(message, {'x': ' specials/A$message->{a}->{b}foo'})
+    assert message['x'] == 'Acfoo'
+
+
+@pytest.mark.xfail(strict=True)
+def test_definitely_fail():
+    assert 'x' == 'y'

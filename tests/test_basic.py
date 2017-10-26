@@ -32,7 +32,7 @@ def test_undefined_special():
 
 def test_multi_level_special():
     message = {'a': {'b': 'c'}}
-    mtransform(message, {'x': ' specials/A$message->{a}->{b}foo'})
+    mtransform(message, {'x': ' specials/A$message->{a}{b}foo'})
     assert message['x'] == 'Acfoo'
 
 

@@ -16,7 +16,16 @@ def mtransform(message, transform):
 
 
 def _mtransform(message, transform, orig_message, args):
+    keys = []
     for t in transform:
+        keys.append(t)
+    for t in keys:
+        if str(t).startswith(' specials/'):
+            if 'no_specials' not in args:
+                new_t = _special(t, orig_message, args)
+                transform[new_t] = transform[t]
+                t = new_t
+
         if isinstance(transform[t], dict) or isinstance(transform[t], list):
             if isinstance(transform[t], dict):
                 if t not in message:
@@ -36,7 +45,7 @@ def _mtransform(message, transform, orig_message, args):
                     ct = ct + 1
         else:
             if t in transform:
-                if transform[t].startswith(' specials/'):
+                if str(transform[t]).startswith(' specials/'):
                     if 'no_specials' in args:
                         if 'no_over_write' in args:
                             if t not in message:

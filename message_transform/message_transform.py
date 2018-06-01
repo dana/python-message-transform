@@ -36,7 +36,7 @@ def _mtransform(message, transform, orig_message, args):
                     ct = ct + 1
         else:
             if t in transform:
-                if transform[t].startswith(' specials/'):
+                if str(transform[t]).startswith(' specials/'):
                     if 'no_specials' in args:
                         if 'no_over_write' in args:
                             if t not in message:

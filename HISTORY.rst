@@ -1,5 +1,12 @@
 History
 -------
+1.1.1
++++++
+released 9-August-2018
+
+- added array handling in keys, allowing multiple substitutions
+- also test against Python 3.6
+
 
 1.1.0
 +++++

@@ -16,56 +16,67 @@ def mtransform(message, transform):
 
 
 def _mtransform(message, transform, orig_message, args):
-    keys = []
-    for t in transform:
-        keys.append(t)
-    for t in keys:
-        if str(t).startswith(' specials/'):
+    transforms = []
+    for my_transform in transform:
+        transforms.append(my_transform)
+    for my_transform in transforms:
+        all_transform_indexes = [my_transform]
+        if str(my_transform).startswith(' specials/'):
             if 'no_specials' not in args:
-                new_t = _special(t, orig_message, args)
-                transform[new_t] = transform[t]
-                t = new_t
+                new_transform_index = _special(my_transform, orig_message,
+                                               args)
+                if type(new_transform_index) == list:
+                    all_transform_indexes = []
+                    for my_new_transform_index in new_transform_index:
+                        transform[my_new_transform_index] = \
+                            transform[my_transform]
+                        all_transform_indexes.append(my_new_transform_index)
+                else:
+                    transform[new_transform_index] = transform[my_transform]
+                    all_transform_indexes = [new_transform_index]
 
-        if isinstance(transform[t], dict) or isinstance(transform[t], list):
-            if isinstance(transform[t], dict):
-                if t not in message:
-                    message[t] = {}
-                _mtransform(message[t], transform[t], orig_message, args)
-            elif isinstance(transform[t], list):
-                if t not in message:
-                    message[t] = []
-                ct = 0
-                for sub_t in transform[t]:
-                    if isinstance(sub_t, dict) or isinstance(sub_t, list):
-                        ret = {}
-                        _mtransform(ret, sub_t, orig_message, args)
-                        message[t].append(ret)
+        for t in all_transform_indexes:
+            if isinstance(transform[t], dict) or isinstance(transform[t],
+                                                            list):
+                if isinstance(transform[t], dict):
+                    if t not in message:
+                        message[t] = {}
+                    _mtransform(message[t], transform[t], orig_message, args)
+                elif isinstance(transform[t], list):
+                    if t not in message:
+                        message[t] = []
+                    ct = 0
+                    for sub_t in transform[t]:
+                        if isinstance(sub_t, dict) or isinstance(sub_t, list):
+                            ret = {}
+                            _mtransform(ret, sub_t, orig_message, args)
+                            message[t].append(ret)
+                        else:
+                            message[t].append(sub_t)
+                        ct = ct + 1
+            else:
+                if t in transform:
+                    if str(transform[t]).startswith(' specials/'):
+                        if 'no_specials' in args:
+                            if 'no_over_write' in args:
+                                if t not in message:
+                                    message[t] = transform[t]
+                            else:
+                                message[t] = transform[t]
+                        else:
+                            if 'no_over_write' in args:
+                                if t not in message:
+                                    message[t] = _special(transform[t],
+                                                          orig_message, args)
+                            else:
+                                message[t] = _special(transform[t],
+                                                      orig_message, args)
                     else:
-                        message[t].append(sub_t)
-                    ct = ct + 1
-        else:
-            if t in transform:
-                if str(transform[t]).startswith(' specials/'):
-                    if 'no_specials' in args:
                         if 'no_over_write' in args:
                             if t not in message:
                                 message[t] = transform[t]
                         else:
                             message[t] = transform[t]
-                    else:
-                        if 'no_over_write' in args:
-                            if t not in message:
-                                message[t] = _special(transform[t],
-                                                      orig_message, args)
-                        else:
-                            message[t] = _special(transform[t],
-                                                  orig_message, args)
-                else:
-                    if 'no_over_write' in args:
-                        if t not in message:
-                            message[t] = transform[t]
-                    else:
-                        message[t] = transform[t]
 
 
 def _special(working_part, message, args):
@@ -87,6 +98,13 @@ def _sub(working_part, message):
     head = main_matches.group(1)
     key = main_matches.group(2)
     tail = main_matches.group(3)
+
+    if key in m and type(m[key]) == list:
+        ret = []
+        for k in m[key]:
+            resolved_key = head + k + tail
+            ret.append(resolved_key)
+        return(ret)
     if tail.startswith('{'):  # sub-substitution
         if key not in m:
             return(_sub(head + '$message->' + tail, m))

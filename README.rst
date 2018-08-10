@@ -14,6 +14,10 @@ Usage::
   mtransform({'a':'b'},{'x':'y','c':{'d':'e'}}) => {'a':'b','x':'y','c':{'d':'e'}}
   mtransform({'a':'b'},{'x':' specials/$message->{a}'}) => {'a':'b','x':'a'}
 
+
+  message = {'a': 'b', 'c': ['d', 'e']}
+  mtransform(message, {' specials/x$message->{c}y': 'x'}) => {'a': 'b', 'c': ['d', 'e'], 'xdy': 'x', 'xey': 'y'}
+
 Contributing
 ============
 

@@ -1,5 +1,12 @@
 History
 -------
+1.1.2
++++++
+released 28-August-2018
+
+- append to transformed attribute if it is an array rather than over-write
+- correct/expand some docs
+
 1.1.1
 +++++
 released 9-August-2018

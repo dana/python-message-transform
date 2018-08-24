@@ -15,6 +15,16 @@ def mtransform(message, transform):
     return _mtransform(message, sub_transform, message, args)
 
 
+def _my_assign(message, index, right_val):
+    if index not in message:
+        return(right_val)
+    if isinstance(message[index], list):
+        ret = message[index]
+        ret.append(right_val)
+        return(ret)
+    return(right_val)
+
+
 def _mtransform(message, transform, orig_message, args):
     transforms = []
     for my_transform in transform:
@@ -60,23 +70,29 @@ def _mtransform(message, transform, orig_message, args):
                         if 'no_specials' in args:
                             if 'no_over_write' in args:
                                 if t not in message:
-                                    message[t] = transform[t]
+                                    message[t] = _my_assign(message, t,
+                                                            transform[t])
                             else:
-                                message[t] = transform[t]
+                                message[t] = _my_assign(message, t,
+                                                        transform[t])
                         else:
                             if 'no_over_write' in args:
                                 if t not in message:
-                                    message[t] = _special(transform[t],
-                                                          orig_message, args)
+                                    assignval = _special(transform[t],
+                                                         orig_message, args)
+                                    message[t] = _my_assign(message, t,
+                                                            assignval)
                             else:
-                                message[t] = _special(transform[t],
-                                                      orig_message, args)
+                                assignval = _special(transform[t],
+                                                     orig_message, args)
+                                message[t] = _my_assign(message, t, assignval)
                     else:
                         if 'no_over_write' in args:
                             if t not in message:
-                                message[t] = transform[t]
+                                message[t] = _my_assign(message, t,
+                                                        transform[t])
                         else:
-                            message[t] = transform[t]
+                            message[t] = _my_assign(message, t, transform[t])
 
 
 def _special(working_part, message, args):

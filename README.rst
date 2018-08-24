@@ -18,14 +18,16 @@ Usage::
   message = {'a': 'b', 'c': ['d', 'e']}
   mtransform(message, {' specials/x$message->{c}y': 'x'}) => {'a': 'b', 'c': ['d', 'e'], 'xdy': 'x', 'xey': 'y'}
 
+[The tests](https://github.com/dana/python-message-transform/tree/master/tests) are simple, clear and illustrate the functionality quite well.
+
 Contributing
 ============
 
-Open up a pull request via https://github.com/dana/python-message-transform, please consider adding tests for any new functionality.  To set up the dev environment (assuming you're using [virtualenvwrapper](http://docs.python-guide.org/en/latest/dev/virtualenvs/#virtualenvwrapper))::
+Open up a pull request via https://github.com/dana/python-message-transform, please consider adding tests for any new functionality.  To develop locally, simply clone the repo and use [tox](https://tox.readthedocs.io/en/latest/):
 
-  $ mkvirtualenv message-transform
-  $ pip install -r dev-requirements.txt
-  $ py.test
+  $ git clone git@github.com:dana/python-message-transform.git
+  $ cd python-message-transform
+  $ tox
 
 Description
 ===========
@@ -48,7 +50,7 @@ None known.
 Copyright
 =========
 
-Copyright (c) 2012, 2013, 2016, 2017 Dana M. Diederich. All Rights Reserved.
+Copyright (c) 2012, 2013, 2016, 2017, 2018 Dana M. Diederich. All Rights Reserved.
 
 Author
 ======
